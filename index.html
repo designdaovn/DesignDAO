@@ -1392,160 +1392,29 @@
     fillLight.position.set(-10, 10, -10);
     scene.add(fillLight);
     
-    // House Group
-    const house = new THREE.Group();
-    
-    // Materials
-    const wallMaterial = new THREE.MeshStandardMaterial({ 
-      color: 0xf5c542,
-      roughness: 0.8,
-      metalness: 0.1
-    });
-    
-    const roofMaterial = new THREE.MeshStandardMaterial({ 
-      color: 0x2d3436,
-      roughness: 0.5,
-      metalness: 0.2
-    });
-    
-    const glassMaterial = new THREE.MeshStandardMaterial({ 
-      color: 0x87ceeb,
-      roughness: 0.1,
-      metalness: 0.8,
-      transparent: true,
-      opacity: 0.6
-    });
-    
-    const solarPanelMaterial = new THREE.MeshStandardMaterial({ 
-      color: 0x1a1a2e,
-      roughness: 0.3,
-      metalness: 0.7
-    });
-    
-    const baseMaterial = new THREE.MeshStandardMaterial({ 
-      color: 0x34495e,
-      roughness: 0.9,
-      metalness: 0.1
-    });
-    
-    const groundMaterial = new THREE.MeshStandardMaterial({ 
-      color: 0xc9b896,
-      roughness: 1,
-      metalness: 0
-    });
-    
-    // Main Building - Left Section
-    const leftBuilding = new THREE.Mesh(
-      new THREE.BoxGeometry(3, 4, 4),
-      wallMaterial
-    );
-    leftBuilding.position.set(-1.5, 2, 0);
-    leftBuilding.castShadow = true;
-    leftBuilding.receiveShadow = true;
-    house.add(leftBuilding);
-    
-    // Main Building - Right Section (taller)
-    const rightBuilding = new THREE.Mesh(
-      new THREE.BoxGeometry(3, 5, 4),
-      wallMaterial
-    );
-    rightBuilding.position.set(1.5, 2.5, 0);
-    rightBuilding.castShadow = true;
-    rightBuilding.receiveShadow = true;
-    house.add(rightBuilding);
-    
-    // Roof - Left Section (Slanted)
-    const roofLeftGeometry = new THREE.BoxGeometry(3.2, 0.3, 4.2);
-    const roofLeft = new THREE.Mesh(roofLeftGeometry, roofMaterial);
-    roofLeft.position.set(-1.5, 4.2, 0);
-    roofLeft.rotation.z = -0.2;
-    roofLeft.castShadow = true;
-    house.add(roofLeft);
-    
-    // Roof - Right Section (Slanted)
-    const roofRightGeometry = new THREE.BoxGeometry(3.2, 0.3, 4.2);
-    const roofRight = new THREE.Mesh(roofRightGeometry, roofMaterial);
-    roofRight.position.set(1.5, 5.2, 0);
-    roofRight.rotation.z = -0.15;
-    roofRight.castShadow = true;
-    house.add(roofRight);
-    
-    // Solar Panels on Right Roof
-    for (let i = 0; i < 3; i++) {
-      for (let j = 0; j < 2; j++) {
-        const solarPanel = new THREE.Mesh(
-          new THREE.BoxGeometry(0.8, 0.05, 1.2),
-          solarPanelMaterial
-        );
-        solarPanel.position.set(0.8 + i * 0.9, 5.4 + (i * 0.1), -0.7 + j * 1.4);
-        solarPanel.rotation.z = -0.15;
-        solarPanel.castShadow = true;
-        house.add(solarPanel);
-      }
+   const loader = new THREE.GLTFLoader();
+
+loader.load(
+  'model.glb', // file bạn upload lên github
+  function (gltf) {
+    const model = gltf.scene;
+    model.scale.set(1,1,1);
+    model.position.set(0,0,0);
+
+    scene.add(model);
+
+    // animate floating
+    function animateModel() {
+      requestAnimationFrame(animateModel);
+      model.rotation.y += 0.002;
     }
-    
-    // Windows - Left Building
-    const windowGeometry = new THREE.BoxGeometry(1.5, 2, 0.1);
-    
-    const windowLeft = new THREE.Mesh(windowGeometry, glassMaterial);
-    windowLeft.position.set(-1.5, 2.5, 2.05);
-    house.add(windowLeft);
-    
-    // Window Frame
-    const frameGeometry = new THREE.BoxGeometry(1.6, 2.1, 0.05);
-    const frameMaterial = new THREE.MeshStandardMaterial({ color: 0x1a1a1a });
-    const windowFrame = new THREE.Mesh(frameGeometry, frameMaterial);
-    windowFrame.position.set(-1.5, 2.5, 2.02);
-    house.add(windowFrame);
-    
-    // Windows - Right Building (larger)
-    const bigWindowGeometry = new THREE.BoxGeometry(2, 3, 0.1);
-    const windowRight = new THREE.Mesh(bigWindowGeometry, glassMaterial);
-    windowRight.position.set(1.5, 2.5, 2.05);
-    house.add(windowRight);
-    
-    const bigFrameGeometry = new THREE.BoxGeometry(2.1, 3.1, 0.05);
-    const windowFrameRight = new THREE.Mesh(bigFrameGeometry, frameMaterial);
-    windowFrameRight.position.set(1.5, 2.5, 2.02);
-    house.add(windowFrameRight);
-    
-    // Base/Foundation
-    const base = new THREE.Mesh(
-      new THREE.BoxGeometry(7, 0.5, 5),
-      baseMaterial
-    );
-    base.position.set(0, -0.25, 0);
-    base.receiveShadow = true;
-    house.add(base);
-    
-    // Grass/Garden Area
-    const grassMaterial = new THREE.MeshStandardMaterial({ 
-      color: 0x7cb342,
-      roughness: 1
-    });
-    
-    const grass = new THREE.Mesh(
-      new THREE.BoxGeometry(8, 0.1, 6),
-      grassMaterial
-    );
-    grass.position.set(0, -0.45, 0);
-    grass.receiveShadow = true;
-    house.add(grass);
-    
-    // Small Bushes
-    const bushMaterial = new THREE.MeshStandardMaterial({ color: 0x558b2f });
-    for (let i = 0; i < 4; i++) {
-      const bush = new THREE.Mesh(
-        new THREE.SphereGeometry(0.3, 8, 8),
-        bushMaterial
-      );
-      bush.position.set(-3 + i * 0.8, -0.2, 2.5);
-      bush.scale.y = 0.7;
-      house.add(bush);
-    }
-    
-    // Add house to scene
-    scene.add(house);
+    animateModel();
+  },
+  undefined,
+  function (error) {
+    console.error(error);
+  }
+);
     
     // Ground Plane
     const ground = new THREE.Mesh(
