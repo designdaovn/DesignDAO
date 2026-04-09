@@ -1780,11 +1780,20 @@
 
     // Add click events to product cards
     document.querySelectorAll('.product-card').forEach((card, index) => {
-      card.style.cursor = 'pointer';
-      card.addEventListener('click', (e) => {
-        // Don't open modal if clicking on the button link
-        if (!e.target.closest('.product-btn')) {
-          openModal(index);
+  card.style.cursor = 'pointer';
+
+  // click card
+  card.addEventListener('click', () => {
+    openModal(index);
+  });
+
+  // click nút xem chi tiết
+  const btn = card.querySelector('.product-btn');
+  if (btn) {
+    btn.addEventListener('click', (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      openModal(index);
         }
       });
     });
