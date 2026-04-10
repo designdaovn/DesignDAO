@@ -17,11 +17,26 @@
       box-sizing: border-box;
     }
 
+    :root {
+      --yellow: #F2C12E;
+      --yellow-dark: #D4A820;
+      --yellow-light: #FDD85A;
+      --black: #1C1C1A;
+      --black-soft: #252522;
+      --black-card: #2A2A27;
+      --grey: #3A3A36;
+      --grey-light: #4A4A45;
+      --text-muted: #9A9A8E;
+      --text-light: #C8C8B8;
+      --white: #FAFAF5;
+    }
+
     body {
       font-family: 'Inter', sans-serif;
-      background: linear-gradient(180deg, #e8f4f8 0%, #d4e4e8 50%, #c9b896 100%);
+      background: var(--black);
       min-height: 100vh;
       overflow-x: hidden;
+      color: var(--white);
     }
 
     /* Header */
@@ -30,61 +45,83 @@
       top: 0;
       left: 0;
       right: 0;
-      z-index: 100;
+      z-index: 9999;
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 1.25rem 3rem;
       background: transparent;
+      transition: background 0.3s, backdrop-filter 0.3s, box-shadow 0.3s;
+    }
+
+    .header.scrolled {
+      background: rgba(255, 255, 255, 0.95);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 2px 24px rgba(0,0,0,0.10);
+    }
+
+    .header.scrolled {
+      background: rgba(28, 28, 26, 0.96);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      box-shadow: 0 2px 24px rgba(0,0,0,0.4);
+      border-bottom: 1px solid rgba(242, 193, 46, 0.15);
     }
 
     .logo {
       font-size: 1.25rem;
       font-weight: 700;
       letter-spacing: 0.1em;
-      color: #1a1a1a;
-    }
-
-    .nav {
-      display: flex;
-      gap: 2.5rem;
+      color: var(--yellow);
     }
 
     .nav a {
-      color: #1a1a1a;
+      color: var(--text-light);
       text-decoration: none;
       font-size: 0.875rem;
       font-weight: 500;
-      transition: opacity 0.2s;
+      transition: color 0.2s;
     }
 
     .nav a:hover {
-      opacity: 0.7;
+      color: var(--yellow);
+      opacity: 1;
     }
 
     .contact-btn {
-      background: #fff;
-      color: #1a1a1a;
+      background: var(--yellow);
+      color: var(--black);
       padding: 0.625rem 1.5rem;
       border-radius: 9999px;
       font-size: 0.875rem;
-      font-weight: 500;
+      font-weight: 600;
       text-decoration: none;
-      border: 1px solid #e5e5e5;
+      border: none;
       transition: all 0.2s;
     }
 
     .contact-btn:hover {
-      background: #1a1a1a;
-      color: #fff;
+      background: var(--yellow-light);
+      color: var(--black);
+      transform: scale(1.04);
     }
 
     /* Hero Section */
     .hero {
       position: relative;
       min-height: 100vh;
-      background: linear-gradient(135deg, #e8f4f8 0%, #dceef4 100%);
+      background: radial-gradient(ellipse at 20% 50%, #252522 0%, #1C1C1A 60%, #111110 100%);
       overflow: hidden;
+    }
+
+    .hero::before {
+      content: '';
+      position: absolute;
+      top: -100px; left: -100px;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(242,193,46,0.08) 0%, transparent 70%);
+      pointer-events: none;
     }
 
     .hero-content {
@@ -98,35 +135,40 @@
     .hero-title {
       font-size: clamp(4rem, 10vw, 7rem);
       font-weight: 900;
-      color: #1a1a1a;
+      color: var(--white);
       line-height: 0.9;
       margin-bottom: 2rem;
       letter-spacing: -0.03em;
+    }
+
+    .hero-title span {
+      color: var(--yellow);
     }
 
     .see-more-btn {
       display: inline-flex;
       align-items: center;
       gap: 0.75rem;
-      background: #1a1a1a;
-      color: #fff;
+      background: var(--yellow);
+      color: var(--black);
       padding: 0.875rem 1.25rem;
       border-radius: 9999px;
       font-size: 0.9rem;
-      font-weight: 500;
+      font-weight: 700;
       text-decoration: none;
-      transition: transform 0.2s, box-shadow 0.2s;
+      transition: transform 0.2s, box-shadow 0.2s, background 0.2s;
     }
 
     .see-more-btn:hover {
       transform: scale(1.05);
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      background: var(--yellow-light);
+      box-shadow: 0 10px 30px rgba(242, 193, 46, 0.3);
     }
 
     .see-more-btn .arrow-icon {
       width: 1.75rem;
       height: 1.75rem;
-      background: #fff;
+      background: var(--black);
       border-radius: 50%;
       display: flex;
       align-items: center;
@@ -136,56 +178,40 @@
     .see-more-btn .arrow-icon svg {
       width: 1rem;
       height: 1rem;
-      stroke: #1a1a1a;
+      stroke: var(--yellow);
     }
 
-    /* 3D Canvas Container */
+    /* 3D Canvas Container — right half of hero */
     #canvas-container {
-      width: 100%;
-      height: 100vh;
-      position: relative;
+      position: absolute;
+      top: 0;
+      right: 0;
+      width: 58%;
+      height: 100%;
+      z-index: 5;
     }
 
     #three-canvas {
       width: 100%;
       height: 100%;
       cursor: grab;
+      display: block;
     }
 
     #three-canvas:active {
       cursor: grabbing;
     }
 
-    /* Badges */
-    .battery-badge {
-      position: absolute;
-      top: 42%;
-      left: 58%;
-      transform: translate(-50%, -50%);
-      background: rgba(255, 255, 255, 0.95);
-      padding: 0.5rem 1rem;
-      border-radius: 9999px;
-      display: flex;
-      align-items: center;
-      gap: 0.5rem;
-      font-size: 0.9rem;
-      font-weight: 600;
-      box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
-      z-index: 25;
-    }
-
-    .battery-icon {
-      color: #22c55e;
-    }
-
     .drag-hint {
       position: absolute;
-      top: 48%;
-      left: 58%;
+      bottom: 2rem;
+      left: 50%;
       transform: translateX(-50%);
-      font-size: 0.8rem;
-      color: rgba(0, 0, 0, 0.4);
-      z-index: 25;
+      font-size: 0.78rem;
+      color: rgba(242, 193, 46, 0.4);
+      z-index: 6;
+      white-space: nowrap;
+      pointer-events: none;
     }
 
     /* Product Carousel */
@@ -193,7 +219,8 @@
       padding: 0 3rem 3rem;
       margin-top: -14rem;
       position: relative;
-      z-index: 30;
+      z-index: 10;
+      background: var(--black);
     }
 
     .products-header {
@@ -206,7 +233,7 @@
     .products-header h2 {
       font-size: 1.5rem;
       font-weight: 700;
-      color: #1a1a1a;
+      color: var(--white);
     }
 
     .scroll-hint {
@@ -214,7 +241,11 @@
       align-items: center;
       gap: 0.5rem;
       font-size: 0.875rem;
-      color: #6b7280;
+      color: var(--text-muted);
+    }
+
+    .scroll-hint svg {
+      stroke: var(--text-muted);
     }
 
     .products-carousel {
@@ -233,38 +264,39 @@
     }
 
     .products-carousel::-webkit-scrollbar {
-      height: 6px;
+      height: 4px;
     }
 
     .products-carousel::-webkit-scrollbar-track {
-      background: #e5e5e5;
+      background: var(--grey);
       border-radius: 3px;
     }
 
     .products-carousel::-webkit-scrollbar-thumb {
-      background: #1a1a1a;
+      background: var(--yellow);
       border-radius: 3px;
     }
 
     .product-card {
       flex: 0 0 320px;
-      background: #fff;
+      background: var(--black-card);
       border-radius: 1.5rem;
       overflow: hidden;
       scroll-snap-align: start;
       transition: transform 0.3s, box-shadow 0.3s;
-      border: 1px solid #e5e5e5;
+      border: 1px solid rgba(242, 193, 46, 0.1);
     }
 
     .product-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 12px 40px rgba(0, 0, 0, 0.12);
+      box-shadow: 0 12px 40px rgba(242, 193, 46, 0.12);
+      border-color: rgba(242, 193, 46, 0.3);
     }
 
     .product-image {
       width: 100%;
       height: 200px;
-      background: linear-gradient(135deg, #f0f0f0 0%, #e0e0e0 100%);
+      background: var(--black-soft);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -276,12 +308,13 @@
       width: 100%;
       height: 100%;
       object-fit: cover;
+      display: block;
     }
 
     .product-image-placeholder {
       width: 120px;
       height: 120px;
-      background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%);
+      background: linear-gradient(135deg, var(--grey) 0%, var(--grey-light) 100%);
       border-radius: 0.5rem;
     }
 
@@ -292,7 +325,7 @@
     .product-title {
       font-size: 1.125rem;
       font-weight: 700;
-      color: #1a1a1a;
+      color: var(--white);
       margin-bottom: 0.75rem;
       line-height: 1.3;
     }
@@ -312,22 +345,22 @@
     .stars svg {
       width: 16px;
       height: 16px;
-      fill: #fbbf24;
+      fill: var(--yellow);
     }
 
     .stars svg.empty {
-      fill: #e5e5e5;
+      fill: var(--grey);
     }
 
     .rating-text {
       font-size: 0.875rem;
       font-weight: 600;
-      color: #1a1a1a;
+      color: var(--white);
     }
 
     .review-count {
       font-size: 0.75rem;
-      color: #6b7280;
+      color: var(--text-muted);
     }
 
     .product-difficulty {
@@ -339,7 +372,7 @@
 
     .difficulty-label {
       font-size: 0.75rem;
-      color: #6b7280;
+      color: var(--text-muted);
     }
 
     .difficulty-dots {
@@ -351,22 +384,22 @@
       width: 8px;
       height: 8px;
       border-radius: 50%;
-      background: #e5e5e5;
+      background: var(--grey);
     }
 
     .difficulty-dot.active {
-      background: #f59e0b;
+      background: var(--yellow);
     }
 
     .difficulty-text {
       font-size: 0.75rem;
       font-weight: 500;
-      color: #f59e0b;
+      color: var(--yellow);
     }
 
     .product-description {
       font-size: 0.875rem;
-      color: #6b7280;
+      color: var(--text-light);
       line-height: 1.5;
       display: -webkit-box;
       -webkit-line-clamp: 3;
@@ -380,44 +413,45 @@
       align-items: center;
       margin-top: 1rem;
       padding-top: 1rem;
-      border-top: 1px solid #f0f0f0;
+      border-top: 1px solid rgba(242, 193, 46, 0.1);
     }
 
     .product-price {
       font-size: 1.25rem;
       font-weight: 700;
-      color: #1a1a1a;
+      color: var(--yellow);
     }
 
     .product-btn {
       display: flex;
       align-items: center;
       gap: 0.5rem;
-      background: #1a1a1a;
-      color: #fff;
+      background: var(--yellow);
+      color: var(--black);
       padding: 0.625rem 1rem;
       border-radius: 9999px;
       font-size: 0.75rem;
-      font-weight: 500;
+      font-weight: 700;
       text-decoration: none;
       transition: all 0.2s;
     }
 
     .product-btn:hover {
-      background: #333;
+      background: var(--yellow-light);
+      transform: scale(1.04);
     }
 
     /* Product Popup Modal */
     .modal-overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.7);
+      background: rgba(0, 0, 0, 0.85);
       z-index: 1000;
       display: none;
       align-items: center;
       justify-content: center;
       padding: 1rem;
-      backdrop-filter: blur(4px);
+      backdrop-filter: blur(6px);
     }
 
     .modal-overlay.active {
@@ -425,7 +459,7 @@
     }
 
     .modal {
-      background: #fff;
+      background: var(--black-card);
       border-radius: 1.5rem;
       max-width: 900px;
       width: 100%;
@@ -433,46 +467,36 @@
       overflow-y: auto;
       position: relative;
       animation: modalSlideIn 0.3s ease;
+      border: 1px solid rgba(242, 193, 46, 0.15);
     }
 
     @keyframes modalSlideIn {
-      from {
-        opacity: 0;
-        transform: translateY(20px) scale(0.95);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
+      from { opacity: 0; transform: translateY(20px) scale(0.95); }
+      to   { opacity: 1; transform: translateY(0) scale(1); }
     }
 
     .modal-close {
       position: absolute;
-      top: 1rem;
-      right: 1rem;
-      width: 2.5rem;
-      height: 2.5rem;
+      top: 1rem; right: 1rem;
+      width: 2.5rem; height: 2.5rem;
       border-radius: 50%;
-      background: #f0f0f0;
-      border: none;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      background: var(--grey);
+      border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
       z-index: 10;
       transition: background 0.2s;
     }
 
-    .modal-close:hover {
-      background: #e0e0e0;
-    }
+    .modal-close:hover { background: var(--yellow); }
+    .modal-close:hover svg { stroke: var(--black); }
+    .modal-close svg { stroke: var(--text-light); }
 
     .modal-media {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 0.5rem;
       padding: 1rem;
-      background: #f5f5f5;
+      background: var(--black-soft);
       border-radius: 1.5rem 1.5rem 0 0;
     }
 
@@ -480,38 +504,27 @@
       border-radius: 1rem;
       overflow: hidden;
       aspect-ratio: 16/10;
-      background: #e0e0e0;
+      background: var(--grey);
     }
 
-    .modal-image img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
+    .modal-image img { width: 100%; height: 100%; object-fit: cover; }
 
     .modal-video {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      background: linear-gradient(135deg, #1a1a2e 0%, #2d2d44 100%);
-      position: relative;
-      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      background: linear-gradient(135deg, var(--black) 0%, var(--grey) 100%);
+      position: relative; cursor: pointer;
     }
 
     .play-button {
-      width: 60px;
-      height: 60px;
-      background: rgba(255, 255, 255, 0.9);
+      width: 60px; height: 60px;
+      background: var(--yellow);
       border-radius: 50%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
+      display: flex; align-items: center; justify-content: center;
       transition: transform 0.2s;
     }
 
-    .modal-video:hover .play-button {
-      transform: scale(1.1);
-    }
+    .modal-video:hover .play-button { transform: scale(1.1); }
+    .play-button svg { fill: var(--black); }
 
     .modal-content {
       padding: 1.5rem 2rem 2rem;
@@ -527,14 +540,14 @@
     .modal-title {
       font-size: 1.75rem;
       font-weight: 700;
-      color: #1a1a1a;
+      color: var(--white);
       margin-bottom: 0.5rem;
     }
 
     .modal-price {
       font-size: 2rem;
       font-weight: 700;
-      color: #22c55e;
+      color: var(--yellow);
     }
 
     .modal-rating {
@@ -544,14 +557,12 @@
       margin-bottom: 1rem;
     }
 
-    .modal-rating .stars svg {
-      width: 20px;
-      height: 20px;
-    }
+    .modal-rating .stars svg { width: 20px; height: 20px; }
 
     .modal-rating-text {
       font-size: 1rem;
       font-weight: 600;
+      color: var(--text-light);
     }
 
     .modal-difficulty {
@@ -559,26 +570,21 @@
       align-items: center;
       gap: 0.75rem;
       padding: 0.75rem 1rem;
-      background: #f5f5f5;
+      background: var(--black-soft);
       border-radius: 0.75rem;
       margin-bottom: 1.5rem;
+      border: 1px solid rgba(242,193,46,0.1);
     }
 
-    .modal-difficulty .difficulty-dots {
-      gap: 0.375rem;
-    }
-
-    .modal-difficulty .difficulty-dot {
-      width: 10px;
-      height: 10px;
-    }
+    .modal-difficulty .difficulty-dots { gap: 0.375rem; }
+    .modal-difficulty .difficulty-dot { width: 10px; height: 10px; }
 
     /* Tabs */
     .modal-tabs {
       display: flex;
       gap: 0.5rem;
       margin-bottom: 1.5rem;
-      border-bottom: 1px solid #e5e5e5;
+      border-bottom: 1px solid rgba(242,193,46,0.1);
       padding-bottom: 0.5rem;
     }
 
@@ -590,65 +596,56 @@
       background: transparent;
       border: none;
       cursor: pointer;
-      color: #6b7280;
+      color: var(--text-muted);
       transition: all 0.2s;
     }
 
     .modal-tab.active {
-      background: #1a1a1a;
-      color: #fff;
+      background: var(--yellow);
+      color: var(--black);
+      font-weight: 700;
     }
 
     .modal-tab:hover:not(.active) {
-      background: #f0f0f0;
+      background: var(--grey);
+      color: var(--white);
     }
 
-    .tab-content {
-      display: none;
-    }
-
-    .tab-content.active {
-      display: block;
-    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
 
     /* Description Tab */
     .modal-description {
       font-size: 1rem;
-      color: #4b5563;
+      color: var(--text-light);
       line-height: 1.7;
     }
 
     .modal-description h4 {
       font-size: 1.125rem;
       font-weight: 600;
-      color: #1a1a1a;
+      color: var(--yellow);
       margin: 1.5rem 0 0.75rem;
     }
 
-    .modal-description h4:first-child {
-      margin-top: 0;
-    }
+    .modal-description h4:first-child { margin-top: 0; }
 
-    .modal-description ul {
-      list-style: none;
-      padding: 0;
-    }
+    .modal-description ul { list-style: none; padding: 0; }
 
     .modal-description li {
       padding: 0.5rem 0;
       padding-left: 1.5rem;
       position: relative;
+      color: var(--text-light);
     }
 
     .modal-description li::before {
       content: '';
       position: absolute;
-      left: 0;
-      top: 50%;
+      left: 0; top: 50%;
       transform: translateY(-50%);
-      width: 8px;
-      height: 8px;
-      background: #22c55e;
+      width: 8px; height: 8px;
+      background: var(--yellow);
       border-radius: 50%;
     }
 
@@ -658,19 +655,18 @@
       align-items: center;
       gap: 2rem;
       padding: 1.5rem;
-      background: #f5f5f5;
+      background: var(--black-soft);
       border-radius: 1rem;
       margin-bottom: 1.5rem;
+      border: 1px solid rgba(242,193,46,0.08);
     }
 
-    .reviews-score {
-      text-align: center;
-    }
+    .reviews-score { text-align: center; }
 
     .reviews-score-number {
       font-size: 3rem;
       font-weight: 700;
-      color: #1a1a1a;
+      color: var(--yellow);
       line-height: 1;
     }
 
@@ -679,9 +675,7 @@
       margin-top: 0.5rem;
     }
 
-    .reviews-bars {
-      flex: 1;
-    }
+    .reviews-bars { flex: 1; }
 
     .review-bar {
       display: flex;
@@ -692,31 +686,28 @@
 
     .review-bar span {
       font-size: 0.75rem;
-      color: #6b7280;
+      color: var(--text-muted);
       width: 40px;
     }
 
     .review-bar-track {
-      flex: 1;
-      height: 6px;
-      background: #e5e5e5;
+      flex: 1; height: 6px;
+      background: var(--grey);
       border-radius: 3px;
     }
 
     .review-bar-fill {
       height: 100%;
-      background: #fbbf24;
+      background: var(--yellow);
       border-radius: 3px;
     }
 
     .review-item {
       padding: 1.25rem 0;
-      border-bottom: 1px solid #f0f0f0;
+      border-bottom: 1px solid rgba(242,193,46,0.08);
     }
 
-    .review-item:last-child {
-      border-bottom: none;
-    }
+    .review-item:last-child { border-bottom: none; }
 
     .review-header {
       display: flex;
@@ -732,25 +723,22 @@
     }
 
     .review-avatar {
-      width: 40px;
-      height: 40px;
+      width: 40px; height: 40px;
       border-radius: 50%;
-      background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: #fff;
-      font-weight: 600;
+      background: linear-gradient(135deg, var(--yellow-dark) 0%, var(--yellow) 100%);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--black);
+      font-weight: 700;
     }
 
     .review-name {
       font-weight: 600;
-      color: #1a1a1a;
+      color: var(--white);
     }
 
     .review-date {
       font-size: 0.75rem;
-      color: #9ca3af;
+      color: var(--text-muted);
     }
 
     .review-stars {
@@ -759,14 +747,13 @@
     }
 
     .review-stars svg {
-      width: 14px;
-      height: 14px;
-      fill: #fbbf24;
+      width: 14px; height: 14px;
+      fill: var(--yellow);
     }
 
     .review-text {
       font-size: 0.9375rem;
-      color: #4b5563;
+      color: var(--text-light);
       line-height: 1.6;
     }
 
@@ -775,24 +762,25 @@
       gap: 1rem;
       margin-top: 2rem;
       padding-top: 1.5rem;
-      border-top: 1px solid #e5e5e5;
+      border-top: 1px solid rgba(242,193,46,0.1);
     }
 
     .btn-primary {
       flex: 1;
-      background: #1a1a1a;
-      color: #fff;
+      background: var(--yellow);
+      color: var(--black);
       padding: 1rem 2rem;
       border-radius: 9999px;
       font-size: 1rem;
-      font-weight: 600;
+      font-weight: 700;
       border: none;
       cursor: pointer;
-      transition: background 0.2s;
+      transition: all 0.2s;
     }
 
     .btn-primary:hover {
-      background: #333;
+      background: var(--yellow-light);
+      transform: scale(1.02);
     }
 
     .btn-secondary {
@@ -800,14 +788,16 @@
       border-radius: 9999px;
       font-size: 1rem;
       font-weight: 500;
-      border: 1px solid #e5e5e5;
-      background: #fff;
+      border: 1px solid rgba(242,193,46,0.3);
+      background: transparent;
+      color: var(--text-light);
       cursor: pointer;
       transition: all 0.2s;
     }
 
     .btn-secondary:hover {
-      border-color: #1a1a1a;
+      border-color: var(--yellow);
+      color: var(--yellow);
     }
 
     @media (max-width: 768px) {
@@ -855,6 +845,171 @@
     }
 
     /* Responsive */
+    /* About Us Modal */
+    .about-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 1rem;
+      backdrop-filter: blur(6px);
+    }
+
+    .about-overlay.active { display: flex; }
+
+    .about-modal {
+      background: var(--black-card);
+      border-radius: 2rem;
+      max-width: 780px;
+      width: 100%;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+      animation: modalSlideIn 0.35s ease;
+      border: 1px solid rgba(242,193,46,0.15);
+    }
+
+    .about-hero {
+      background: linear-gradient(135deg, #252522 0%, #1C1C1A 100%);
+      border-radius: 2rem 2rem 0 0;
+      padding: 3.5rem 2.5rem 2.5rem;
+      position: relative;
+      overflow: hidden;
+      border-bottom: 1px solid rgba(242,193,46,0.15);
+    }
+
+    .about-hero::before {
+      content: '';
+      position: absolute;
+      top: -60px; right: -60px;
+      width: 250px; height: 250px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(242,193,46,0.12) 0%, transparent 70%);
+    }
+
+    .about-hero::after {
+      content: '';
+      position: absolute;
+      bottom: -80px; left: -40px;
+      width: 300px; height: 300px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(242,193,46,0.06) 0%, transparent 70%);
+    }
+
+    .about-hero h2 {
+      font-size: 2.5rem;
+      font-weight: 900;
+      letter-spacing: -0.03em;
+      margin-bottom: 0.75rem;
+      color: var(--yellow);
+    }
+
+    .about-hero p {
+      font-size: 1.05rem;
+      color: var(--text-light);
+      line-height: 1.6;
+      max-width: 500px;
+    }
+
+    .about-body {
+      padding: 2rem 2.5rem 2.5rem;
+    }
+
+    .about-section { margin-bottom: 2rem; }
+
+    .about-section h3 {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: var(--white);
+      margin-bottom: 0.875rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .about-section h3 .icon {
+      width: 28px; height: 28px;
+      background: var(--yellow);
+      border-radius: 8px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--black);
+      font-size: 0.85rem;
+      font-style: normal;
+    }
+
+    .about-section p {
+      color: var(--text-light);
+      line-height: 1.75;
+      font-size: 0.9375rem;
+    }
+
+    .about-values {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+
+    .about-value-card {
+      background: var(--black-soft);
+      border-radius: 1rem;
+      padding: 1.25rem 1rem;
+      text-align: center;
+      border: 1px solid rgba(242,193,46,0.08);
+      transition: border-color 0.2s;
+    }
+
+    .about-value-card:hover { border-color: rgba(242,193,46,0.3); }
+    .about-value-card .v-icon { font-size: 1.75rem; margin-bottom: 0.5rem; }
+
+    .about-value-card h4 {
+      font-size: 0.875rem;
+      font-weight: 700;
+      color: var(--yellow);
+      margin-bottom: 0.25rem;
+    }
+
+    .about-value-card p {
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+    }
+
+    .about-close {
+      position: absolute;
+      top: 1rem; right: 1rem;
+      width: 2.5rem; height: 2.5rem;
+      border-radius: 50%;
+      background: rgba(242,193,46,0.15);
+      border: none; cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      z-index: 10;
+      transition: background 0.2s;
+    }
+
+    .about-close:hover { background: var(--yellow); }
+    .about-close:hover svg { stroke: var(--black); }
+    .about-close svg { stroke: var(--yellow); }
+
+    @media (max-width: 600px) {
+      .about-values { grid-template-columns: repeat(2, 1fr); }
+      .about-hero h2 { font-size: 1.75rem; }
+      .about-body { padding: 1.5rem; }
+    }
+
+    /* Product image styling – easy to replace */
+    .product-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
     @media (max-width: 768px) {
       .header {
         padding: 1rem 1.5rem;
@@ -875,39 +1030,40 @@
         font-size: 3rem;
       }
 
-      .battery-badge {
-        top: 35%;
-        left: 50%;
+      #canvas-container {
+        width: 100%;
+        height: 55vw;
+        position: relative;
+        top: auto; right: auto;
       }
 
       .drag-hint {
-        top: 42%;
-        left: 50%;
+        bottom: 0.75rem;
       }
 
       .products-section {
         padding: 0 1.5rem 2rem;
-        margin-top: -4rem;
+        margin-top: -2rem;
       }
     }
   </style>
 </head>
 <body>
   <!-- Header -->
-<header class="header">
+<header class="header" id="mainHeader">
     <div class="logo">DesignDAO</div>
     <nav class="nav">
-      <a href="#">Home</a>
-      <a href="#">About Us</a>
+      <a href="#" onclick="scrollToTop(event)">Home</a>
+      <a href="#" onclick="openAbout(event)">About Us</a>
     </nav>
-    <a href="#" class="contact-btn">Contact Us</a>
+    <a href="https://zalo.me/0358056699" target="_blank" class="contact-btn">Contact Us</a>
   </header>
 
   <!-- Hero Section -->
   <section class="hero">
     <div class="hero-content">
       <h1 class="hero-title">Hồ Sơ Mật</h1>
-      <a href="#products" class="see-more-btn">
+      <a href="#products" class="see-more-btn" onclick="scrollToProducts(event)">
         Xem Thêm
         <span class="arrow-icon">
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
@@ -919,18 +1075,12 @@
 
     <div id="canvas-container">
       <canvas id="three-canvas"></canvas>
-      <div class="battery-badge">
-        <svg class="battery-icon" width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-          <path d="M17 6H22V18H17V20C17 20.5523 16.5523 21 16 21H4C3.44772 21 3 20.5523 3 20V4C3 3.44772 3.44772 3 4 3H16C16.5523 3 17 3.44772 17 4V6ZM15 8V5H5V19H15V16H20V8H15Z"/>
-        </svg>
-        92%
-      </div>
-      <div class="drag-hint">Drag to rotate • Auto-rotating</div>
+      <div class="drag-hint">Kéo để xoay • Tự động xoay</div>
     </div>
   </section>
 
   <!-- Product Cards Section -->
-  <section class="products-section">
+  <section class="products-section" id="products">
     <div class="products-header">
       <h2>Sản Phẩm Nổi Bật</h2>
       <div class="scroll-hint">
@@ -943,17 +1093,11 @@
 
     <div class="products-carousel" id="productsCarousel">
       <!-- Product 1 -->
-      <div class="product-card">
-        <div class="product-image">
-          <svg viewBox="0 0 120 120" fill="none" style="width: 100px; height: 100px;">
-            <rect x="10" y="30" width="100" height="60" rx="4" fill="#1a1a2e"/>
-            <rect x="15" y="35" width="42" height="25" rx="2" fill="#3b82f6" opacity="0.3"/>
-            <rect x="63" y="35" width="42" height="25" rx="2" fill="#3b82f6" opacity="0.3"/>
-            <rect x="15" y="65" width="42" height="20" rx="2" fill="#3b82f6" opacity="0.3"/>
-            <rect x="63" y="65" width="42" height="20" rx="2" fill="#3b82f6" opacity="0.3"/>
-            <line x1="60" y1="35" x2="60" y2="85" stroke="#2d2d44" stroke-width="2"/>
-            <line x1="15" y1="60" x2="105" y2="60" stroke="#2d2d44" stroke-width="2"/>
-          </svg>
+      <div class="product-card" data-product="0">
+        <div class="product-image" style="background: linear-gradient(135deg, #1a1a2e 0%, #2d3748 100%);">
+          <!-- THAY THẾ ẢNH: đổi src thành URL/đường dẫn ảnh sản phẩm 1 của bạn -->
+          <img src="YOUR_IMAGE_URL_1_HERE" alt="Ác Giả Ác Báo"
+            onerror="this.style.display='none'; this.parentElement.innerHTML += '<div style=\'color:#fff;font-size:0.8rem;opacity:0.6;padding:1rem;text-align:center;\'>🔍 Ảnh sản phẩm 1</div>'">
         </div>
         <div class="product-content">
           <h3 class="product-title">[GAME DR] - Ác Giả ác Báo</h3>
@@ -993,14 +1137,11 @@
       </div>
 
       <!-- Product 2 -->
-      <div class="product-card">
+      <div class="product-card" data-product="1">
         <div class="product-image" style="background: linear-gradient(135deg, #1e3a4a 0%, #2d5a6a 100%);">
-          <svg viewBox="0 0 120 120" fill="none" style="width: 100px; height: 100px;">
-            <rect x="30" y="20" width="60" height="80" rx="6" fill="#2a2a3e"/>
-            <rect x="35" y="30" width="50" height="30" rx="2" fill="#22c55e" opacity="0.3"/>
-            <circle cx="60" cy="80" r="12" fill="#22c55e" opacity="0.5"/>
-            <text x="60" y="84" font-size="10" fill="#fff" text-anchor="middle">ON</text>
-          </svg>
+          <!-- THAY THẾ ẢNH: đổi src thành URL/đường dẫn ảnh sản phẩm 2 của bạn -->
+          <img src="YOUR_IMAGE_URL_2_HERE" alt="Con Số Tử Thần"
+            onerror="this.style.display='none'; this.parentElement.innerHTML += '<div style=\'color:#fff;font-size:0.8rem;opacity:0.6;padding:1rem;text-align:center;\'>🔢 Ảnh sản phẩm 2</div>'">
         </div>
         <div class="product-content">
           <h3 class="product-title">[GAME AR] - Con Số Tử Thần</h3>
@@ -1040,14 +1181,11 @@
       </div>
 
       <!-- Product 3 -->
-      <div class="product-card">
+      <div class="product-card" data-product="2">
         <div class="product-image" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
-          <svg viewBox="0 0 120 120" fill="none" style="width: 100px; height: 100px;">
-            <rect x="25" y="25" width="70" height="70" rx="8" fill="#1a1a2e"/>
-            <rect x="30" y="35" width="60" height="40" rx="4" fill="#22c55e" opacity="0.4"/>
-            <text x="60" y="60" font-size="14" fill="#fff" text-anchor="middle" font-weight="bold">100%</text>
-            <rect x="40" y="80" width="40" height="8" rx="2" fill="#22c55e"/>
-          </svg>
+          <!-- THAY THẾ ẢNH: đổi src thành URL/đường dẫn ảnh sản phẩm 3 của bạn -->
+          <img src="YOUR_IMAGE_URL_3_HERE" alt="Kỳ Án Lệ Nguyệt Viên"
+            onerror="this.style.display='none'; this.parentElement.innerHTML += '<div style=\'color:#fff;font-size:0.8rem;opacity:0.6;padding:1rem;text-align:center;\'>🏯 Ảnh sản phẩm 3</div>'">
         </div>
         <div class="product-content">
           <h3 class="product-title">[GAME AR] - Kỳ Án Lệ Nguyệt Viên</h3>
@@ -1087,17 +1225,11 @@
       </div>
 
       <!-- Product 4 -->
-      <div class="product-card">
+      <div class="product-card" data-product="3">
         <div class="product-image" style="background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);">
-          <svg viewBox="0 0 120 120" fill="none" style="width: 100px; height: 100px;">
-            <circle cx="60" cy="60" r="35" fill="#fff" opacity="0.2"/>
-            <circle cx="60" cy="60" r="25" fill="#fff" opacity="0.3"/>
-            <circle cx="60" cy="60" r="8" fill="#fbbf24"/>
-            <line x1="60" y1="20" x2="60" y2="35" stroke="#fbbf24" stroke-width="3"/>
-            <line x1="60" y1="85" x2="60" y2="100" stroke="#fbbf24" stroke-width="3"/>
-            <line x1="20" y1="60" x2="35" y2="60" stroke="#fbbf24" stroke-width="3"/>
-            <line x1="85" y1="60" x2="100" y2="60" stroke="#fbbf24" stroke-width="3"/>
-          </svg>
+          <!-- THAY THẾ ẢNH: đổi src thành URL/đường dẫn ảnh sản phẩm 4 của bạn -->
+          <img src="YOUR_IMAGE_URL_4_HERE" alt="Vòng Xoáy Tội Ác"
+            onerror="this.style.display='none'; this.parentElement.innerHTML += '<div style=\'color:#fff;font-size:0.8rem;opacity:0.6;padding:1rem;text-align:center;\'>🔥 Ảnh sản phẩm 4</div>'">
         </div>
         <div class="product-content">
           <h3 class="product-title">[GAME DR] - Vòng xoáy tội ác</h3>
@@ -1138,6 +1270,67 @@
       </div>
     </div>
   </section>
+
+  <!-- About Us Modal -->
+  <div class="about-overlay" id="aboutModal">
+    <div class="about-modal">
+      <button class="about-close" onclick="closeAbout()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <path d="M18 6L6 18M6 6l12 12"/>
+        </svg>
+      </button>
+      <div class="about-hero">
+        <h2>Chúng tôi là DesignDAO</h2>
+        <p>Tổ chức ít lợi nhuận tiên phong trong lĩnh vực trò chơi phá án thực tế tại Việt Nam — nơi tư duy gặp gỡ trí tưởng tượng.</p>
+      </div>
+      <div class="about-body">
+        <div class="about-section">
+          <h3><span class="icon">✦</span> Câu chuyện của chúng tôi</h3>
+          <p>DesignDAO ra đời từ niềm đam mê với những câu chuyện bí ẩn và nghệ thuật kể chuyện sáng tạo. Chúng tôi tin rằng một trò chơi tốt không chỉ mang lại giải trí — nó còn rèn luyện tư duy phản biện, khả năng suy luận và tinh thần làm việc nhóm.</p>
+          <p style="margin-top: 0.75rem;">Từ những bộ hồ sơ điều tra đầu tiên được in thủ công, đến nay DesignDAO đã tạo ra các trải nghiệm kết hợp tài liệu thực tế và công nghệ AR — mang thám tử ra khỏi màn hình và vào cuộc sống thực.</p>
+        </div>
+
+        <div class="about-section">
+          <h3><span class="icon">◆</span> Giá trị cốt lõi</h3>
+          <div class="about-values">
+            <div class="about-value-card">
+              <div class="v-icon">🔍</div>
+              <h4>Tư duy sắc bén</h4>
+              <p>Mỗi game là một bài kiểm tra logic và quan sát.</p>
+            </div>
+            <div class="about-value-card">
+              <div class="v-icon">🎭</div>
+              <h4>Kể chuyện đỉnh cao</h4>
+              <p>Kịch bản được viết tỉ mỉ, chân thực và hấp dẫn.</p>
+            </div>
+            <div class="about-value-card">
+              <div class="v-icon">🤝</div>
+              <h4>Ít lợi nhuận</h4>
+              <p>Lợi nhuận tái đầu tư vào cộng đồng và sản phẩm mới.</p>
+            </div>
+          </div>
+        </div>
+
+        <div class="about-section">
+          <h3><span class="icon">▶</span> Sứ mệnh</h3>
+          <p>Chúng tôi muốn phổ biến văn hóa chơi game trí tuệ tại Việt Nam — tạo ra những sản phẩm mà mỗi gia đình, nhóm bạn bè hay đồng nghiệp đều có thể cùng nhau khám phá, suy luận và kết nối.</p>
+        </div>
+
+        <div style="display:flex; gap:1rem; margin-top:1.5rem;">
+          <a href="https://zalo.me/0358056699" target="_blank"
+            style="flex:1; background:#F2C12E; color:#1C1C1A; padding:0.875rem; border-radius:9999px; text-align:center; font-weight:700; text-decoration:none; font-size:0.9375rem; transition:background 0.2s;"
+            onmouseover="this.style.background='#FDD85A'" onmouseout="this.style.background='#F2C12E'">
+            💬 Liên hệ Zalo
+          </a>
+          <button onclick="closeAbout()"
+            style="padding:0.875rem 1.5rem; border-radius:9999px; border:1.5px solid rgba(242,193,46,0.3); background:transparent; color:#C8C8B8; cursor:pointer; font-weight:500; font-size:0.9375rem; transition:all 0.2s;"
+            onmouseover="this.style.borderColor='#F2C12E';this.style.color='#F2C12E'" onmouseout="this.style.borderColor='rgba(242,193,46,0.3)';this.style.color='#C8C8B8'">
+            Đóng
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
 
   <!-- Product Modal -->
   <div class="modal-overlay" id="productModal">
@@ -1348,116 +1541,106 @@
   </div>
 
   <script>
-    // Three.js Scene Setup
+    // ── Three.js Setup ────────────────────────────────────────────
     const canvas = document.getElementById('three-canvas');
+    const container = document.getElementById('canvas-container');
+
     const scene = new THREE.Scene();
-    
+    scene.background = null; // transparent
+
+    function getSize() {
+      return { w: container.clientWidth, h: container.clientHeight };
+    }
+
     // Camera
-    const camera = new THREE.PerspectiveCamera(45, window.innerWidth / window.innerHeight, 0.1, 1000);
-    camera.position.set(8, 6, 12);
-    
+    const { w, h } = getSize();
+    const camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 1000);
+    camera.position.set(0, 1.5, 5);
+
     // Renderer
-    const renderer = new THREE.WebGLRenderer({ 
-      canvas: canvas, 
-      antialias: true, 
-      alpha: true 
-    });
-    renderer.setSize(window.innerWidth, window.innerHeight);
+    const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
+    renderer.setSize(w, h);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
-    
+    renderer.outputEncoding = THREE.sRGBEncoding;
+
     // Orbit Controls
     const controls = new THREE.OrbitControls(camera, canvas);
     controls.enableDamping = true;
-    controls.dampingFactor = 0.05;
-    controls.enableZoom = false;
+    controls.dampingFactor = 0.06;
+    controls.enableZoom = true;
     controls.enablePan = false;
     controls.autoRotate = true;
-    controls.autoRotateSpeed = 0.5;
-    controls.maxPolarAngle = Math.PI / 2;
-    controls.minPolarAngle = Math.PI / 4;
-    
+    controls.autoRotateSpeed = 1.2;
+    controls.minPolarAngle = Math.PI / 6;
+    controls.maxPolarAngle = Math.PI / 1.8;
+
     // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.6);
+    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
     scene.add(ambientLight);
-    
-    const directionalLight = new THREE.DirectionalLight(0xffffff, 1);
-    directionalLight.position.set(10, 20, 10);
-    directionalLight.castShadow = true;
-    directionalLight.shadow.mapSize.width = 2048;
-    directionalLight.shadow.mapSize.height = 2048;
-    scene.add(directionalLight);
-    
-    const fillLight = new THREE.DirectionalLight(0xffeedd, 0.3);
-    fillLight.position.set(-10, 10, -10);
+
+    const keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
+    keyLight.position.set(5, 10, 7);
+    keyLight.castShadow = true;
+    scene.add(keyLight);
+
+    const fillLight = new THREE.DirectionalLight(0xddeeff, 0.4);
+    fillLight.position.set(-5, 5, -5);
     scene.add(fillLight);
-    
-   const loader = new THREE.GLTFLoader();
 
-loader.load(
-  'model.glb', // file bạn upload lên github
-  function (gltf) {
-    const model = gltf.scene;
-    model.scale.set(1,1,1);
-    model.position.set(0,0,0);
+    // ── Load model.glb from GitHub ────────────────────────────────
+    // GLTFLoader via CDN
+    const script = document.createElement('script');
+    script.src = 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js';
+    script.onload = function() {
+      const loader = new THREE.GLTFLoader();
+      // Load model.glb từ cùng thư mục (GitHub Pages root)
+      const modelUrl = 'https://designdaovn.github.io/DesignDAO/model.glb';
 
-    scene.add(model);
+      loader.load(
+        modelUrl,
+        function(gltf) {
+          const model = gltf.scene;
 
-    // animate floating
-    function animateModel() {
-      requestAnimationFrame(animateModel);
-      model.rotation.y += 0.002;
-    }
-    animateModel();
-  },
-  undefined,
-  function (error) {
-    console.error(error);
-  }
-);
-    
-    // Ground Plane
-    const ground = new THREE.Mesh(
-      new THREE.PlaneGeometry(100, 100),
-      groundMaterial
-    );
-    ground.rotation.x = -Math.PI / 2;
-    ground.position.y = -0.5;
-    ground.receiveShadow = true;
-    scene.add(ground);
-    
-    // Animation
-    let time = 0;
-    
+          // Căn giữa model tự động
+          const box = new THREE.Box3().setFromObject(model);
+          const center = box.getCenter(new THREE.Vector3());
+          const size = box.getSize(new THREE.Vector3());
+          const maxDim = Math.max(size.x, size.y, size.z);
+          const scale = 3 / maxDim;
+          model.scale.setScalar(scale);
+          model.position.sub(center.multiplyScalar(scale));
+
+          scene.add(model);
+
+          // Điều chỉnh camera theo kích thước model
+          camera.position.set(0, size.y * scale * 0.5, maxDim * scale * 2.2);
+          controls.target.set(0, 0, 0);
+          controls.update();
+        },
+        undefined,
+        function(error) {
+          console.warn('Không load được model.glb:', error);
+        }
+      );
+    };
+    document.head.appendChild(script);
+
+    // ── Animation loop ────────────────────────────────────────────
     function animate() {
       requestAnimationFrame(animate);
-      
-      time += 0.01;
-      
-      // Gentle floating animation
-      house.position.y = Math.sin(time) * 0.1;
-      house.rotation.y = Math.sin(time * 0.5) * 0.02;
-      
       controls.update();
       renderer.render(scene, camera);
     }
-    
     animate();
-    
-    // Handle resize
+
+    // ── Resize handler ────────────────────────────────────────────
     window.addEventListener('resize', () => {
-      camera.aspect = window.innerWidth / window.innerHeight;
+      const { w, h } = getSize();
+      camera.aspect = w / h;
       camera.updateProjectionMatrix();
-      renderer.setSize(window.innerWidth, window.innerHeight);
-    });
-    
-    // Hide instruction after interaction
-    canvas.addEventListener('mousedown', () => {
-      const instruction = document.querySelector('.instruction');
-      if (instruction) {
-        instruction.style.display = 'none';
-      }
+      renderer.setSize(w, h);
     });
 
     // Product Carousel Drag to Scroll
@@ -1645,28 +1828,78 @@ loader.load(
     document.addEventListener('keydown', (e) => {
       if (e.key === 'Escape') {
         closeModal();
+        closeAbout();
       }
     });
 
     // Add click events to product cards
     document.querySelectorAll('.product-card').forEach((card, index) => {
-  card.style.cursor = 'pointer';
+      card.style.cursor = 'pointer';
 
-  // click card
-  card.addEventListener('click', () => {
-    openModal(index);
-  });
-
-  // click nút xem chi tiết
-  const btn = card.querySelector('.product-btn');
-  if (btn) {
-    btn.addEventListener('click', (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      openModal(index);
-        }
+      // click card — but not if dragging carousel
+      let isDragging = false;
+      card.addEventListener('mousedown', () => { isDragging = false; });
+      card.addEventListener('mousemove', () => { isDragging = true; });
+      card.addEventListener('click', () => {
+        if (!isDragging) openModal(index);
       });
+
+      // click nút Chi tiết
+      const btn = card.querySelector('.product-btn');
+      if (btn) {
+        btn.addEventListener('click', (e) => {
+          e.preventDefault();
+          e.stopPropagation();
+          openModal(index);
+        });
+      }
     });
+
+    // ── Header background on scroll ──────────────────────────────
+    const header = document.getElementById('mainHeader');
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 50) {
+        header.classList.add('scrolled');
+      } else {
+        header.classList.remove('scrolled');
+      }
+    });
+
+    // ── Scroll to products section ────────────────────────────────
+    function scrollToProducts(e) {
+      e.preventDefault();
+      const section = document.getElementById('products');
+      if (section) {
+        section.scrollIntoView({ behavior: 'smooth' });
+      }
+    }
+
+    // ── Scroll to top ─────────────────────────────────────────────
+    function scrollToTop(e) {
+      e.preventDefault();
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    // ── About Us modal ────────────────────────────────────────────
+    function openAbout(e) {
+      if (e) e.preventDefault();
+      document.getElementById('aboutModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    function closeAbout() {
+      document.getElementById('aboutModal').classList.remove('active');
+      document.body.style.overflow = '';
+    }
+
+    // Close about on overlay click
+    document.getElementById('aboutModal').addEventListener('click', (e) => {
+      if (e.target === document.getElementById('aboutModal')) {
+        closeAbout();
+      }
+    });
+
   </script>
 </body>
 </html>
+
