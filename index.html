@@ -181,12 +181,12 @@
       stroke: var(--yellow);
     }
 
-    /* 3D Canvas Container — right half of hero */
+    /* 3D Canvas Container — full hero, like reference */
     #canvas-container {
       position: absolute;
       top: 0;
-      right: 0;
-      width: 58%;
+      left: 0;
+      width: 100%;
       height: 100%;
       z-index: 5;
     }
@@ -202,13 +202,40 @@
       cursor: grabbing;
     }
 
+    /* Badge nổi trên model */
+    .scene-badge {
+      position: absolute;
+      top: 42%;
+      left: 62%;
+      transform: translate(-50%, -50%);
+      background: rgba(242, 193, 46, 0.92);
+      color: var(--black);
+      padding: 0.45rem 1rem;
+      border-radius: 9999px;
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      font-size: 0.82rem;
+      font-weight: 700;
+      box-shadow: 0 4px 20px rgba(242,193,46,0.3);
+      z-index: 25;
+      pointer-events: none;
+      white-space: nowrap;
+      animation: badgeFloat 3s ease-in-out infinite;
+    }
+
+    @keyframes badgeFloat {
+      0%, 100% { transform: translate(-50%, -50%) translateY(0); }
+      50%       { transform: translate(-50%, -50%) translateY(-6px); }
+    }
+
     .drag-hint {
       position: absolute;
       bottom: 2rem;
-      left: 50%;
+      left: 62%;
       transform: translateX(-50%);
       font-size: 0.78rem;
-      color: rgba(242, 193, 46, 0.4);
+      color: rgba(242, 193, 46, 0.45);
       z-index: 6;
       white-space: nowrap;
       pointer-events: none;
@@ -446,7 +473,7 @@
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.85);
-      z-index: 1000;
+      z-index: 10000;
       display: none;
       align-items: center;
       justify-content: center;
@@ -850,7 +877,7 @@
       position: fixed;
       inset: 0;
       background: rgba(0, 0, 0, 0.85);
-      z-index: 2000;
+      z-index: 10000;
       display: none;
       align-items: center;
       justify-content: center;
@@ -1010,6 +1037,69 @@
       display: block;
     }
 
+    /* Slideshow */
+    .modal-slideshow {
+      position: relative;
+      border-radius: 1rem;
+      overflow: hidden;
+      aspect-ratio: 16/10;
+      background: var(--grey);
+    }
+
+    .slideshow-track {
+      display: flex;
+      width: 100%;
+      height: 100%;
+      transition: transform 0.4s cubic-bezier(0.4,0,0.2,1);
+    }
+
+    .slideshow-track img {
+      flex: 0 0 100%;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+    }
+
+    .slide-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      width: 2.25rem; height: 2.25rem;
+      border-radius: 50%;
+      background: rgba(28,28,26,0.75);
+      border: 1px solid rgba(242,193,46,0.3);
+      color: var(--yellow);
+      cursor: pointer;
+      display: flex; align-items: center; justify-content: center;
+      transition: background 0.2s;
+      z-index: 5;
+    }
+
+    .slide-btn:hover { background: rgba(242,193,46,0.25); }
+    .slide-prev { left: 0.625rem; }
+    .slide-next { right: 0.625rem; }
+
+    .slide-dots {
+      position: absolute;
+      bottom: 0.625rem;
+      left: 50%; transform: translateX(-50%);
+      display: flex; gap: 0.375rem;
+    }
+
+    .slide-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.4);
+      cursor: pointer;
+      transition: background 0.2s, transform 0.2s;
+    }
+
+    .slide-dot.active {
+      background: var(--yellow);
+      transform: scale(1.3);
+    }
+
     @media (max-width: 768px) {
       .header {
         padding: 1rem 1.5rem;
@@ -1032,13 +1122,18 @@
 
       #canvas-container {
         width: 100%;
-        height: 55vw;
-        position: relative;
-        top: auto; right: auto;
+        height: 100%;
+        position: absolute;
+        top: 0; left: 0;
+      }
+
+      .scene-badge {
+        top: 38%;
+        left: 50%;
       }
 
       .drag-hint {
-        bottom: 0.75rem;
+        left: 50%;
       }
 
       .products-section {
@@ -1075,6 +1170,9 @@
 
     <div id="canvas-container">
       <canvas id="three-canvas"></canvas>
+      <div class="scene-badge">
+        🔍 Kéo để khám phá hiện trường
+      </div>
       <div class="drag-hint">Kéo để xoay • Tự động xoay</div>
     </div>
   </section>
@@ -1342,19 +1440,23 @@
       </button>
 
       <div class="modal-media">
-        <div class="modal-image" id="modalImage">
-          <svg viewBox="0 0 120 120" fill="none" style="width: 100%; height: 100%; padding: 2rem;">
-            <rect x="10" y="30" width="100" height="60" rx="4" fill="#1a1a2e"/>
-            <rect x="15" y="35" width="42" height="25" rx="2" fill="#3b82f6" opacity="0.3"/>
-            <rect x="63" y="35" width="42" height="25" rx="2" fill="#3b82f6" opacity="0.3"/>
-          </svg>
+        <!-- Slideshow ảnh -->
+        <div class="modal-slideshow" id="modalSlideshow">
+          <div class="slideshow-track" id="slideshowTrack"></div>
+          <button class="slide-btn slide-prev" onclick="slideMove(-1)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M15 18l-6-6 6-6"/></svg>
+          </button>
+          <button class="slide-btn slide-next" onclick="slideMove(1)">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M9 18l6-6-6-6"/></svg>
+          </button>
+          <div class="slide-dots" id="slideDots"></div>
         </div>
-        <div class="modal-video" onclick="playVideo()">
-          <div class="play-button">
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="#1a1a1a">
-              <path d="M8 5v14l11-7z"/>
-            </svg>
+        <!-- Video YouTube -->
+        <div class="modal-video" id="modalVideoWrap">
+          <div class="play-button" id="modalPlayBtn" onclick="playVideo()">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#1a1a1a"><path d="M8 5v14l11-7z"/></svg>
           </div>
+          <iframe id="modalVideoFrame" style="display:none;width:100%;height:100%;border:none;border-radius:1rem;" allowfullscreen allow="autoplay"></iframe>
         </div>
       </div>
 
@@ -1509,7 +1611,7 @@
         </div>
 
         <div class="modal-cta">
-          <button class="btn-primary">Dat hang ngay</button>
+          <button class="btn-primary" onclick="window.open('https://zalo.me/0358056699','_blank')">Đặt Hàng Ngay 💬</button>
           <button class="btn-secondary">
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
               <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/>
@@ -1526,96 +1628,457 @@
     const container = document.getElementById('canvas-container');
 
     const scene = new THREE.Scene();
-    scene.background = null; // transparent
+    scene.background = null;
+    scene.fog = new THREE.FogExp2(0x1a1008, 0.045);
 
     function getSize() {
       return { w: container.clientWidth, h: container.clientHeight };
     }
 
-    // Camera
     const { w, h } = getSize();
-    const camera = new THREE.PerspectiveCamera(45, w / h, 0.1, 1000);
-    camera.position.set(0, 1.5, 5);
+    const camera = new THREE.PerspectiveCamera(50, w / h, 0.1, 100);
+    camera.position.set(6, 9, 14);
 
-    // Renderer
     const renderer = new THREE.WebGLRenderer({ canvas, antialias: true, alpha: true });
     renderer.setSize(w, h);
     renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFSoftShadowMap;
     renderer.outputEncoding = THREE.sRGBEncoding;
+    renderer.toneMapping = THREE.ReinhardToneMapping;
+    renderer.toneMappingExposure = 1.1;
 
-    // Orbit Controls
     const controls = new THREE.OrbitControls(camera, canvas);
     controls.enableDamping = true;
-    controls.dampingFactor = 0.06;
+    controls.dampingFactor = 0.07;
     controls.enableZoom = true;
     controls.enablePan = false;
     controls.autoRotate = true;
-    controls.autoRotateSpeed = 1.2;
-    controls.minPolarAngle = Math.PI / 6;
-    controls.maxPolarAngle = Math.PI / 1.8;
+    controls.autoRotateSpeed = 0.5;
+    controls.minPolarAngle = Math.PI / 8;
+    controls.maxPolarAngle = Math.PI / 2.2;
+    controls.minDistance = 6;
+    controls.maxDistance = 20;
+    controls.target.set(0, 1.5, 0);
 
-    // Lighting
-    const ambientLight = new THREE.AmbientLight(0xffffff, 0.8);
-    scene.add(ambientLight);
+    // ── SCENE GROUP (for floating animation) ─────────────────────
+    const sceneGroup = new THREE.Group();
+    scene.add(sceneGroup);
 
-    const keyLight = new THREE.DirectionalLight(0xffffff, 1.2);
-    keyLight.position.set(5, 10, 7);
-    keyLight.castShadow = true;
-    scene.add(keyLight);
+    // ── Helper: make a box mesh ───────────────────────────────────
+    function box(w, h, d, color, options = {}) {
+      const geo = new THREE.BoxGeometry(w, h, d);
+      const mat = new THREE.MeshStandardMaterial({
+        color,
+        roughness: options.roughness ?? 0.8,
+        metalness: options.metalness ?? 0.0,
+        ...options.matExtra
+      });
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      return mesh;
+    }
 
-    const fillLight = new THREE.DirectionalLight(0xddeeff, 0.4);
-    fillLight.position.set(-5, 5, -5);
-    scene.add(fillLight);
+    function cylinder(rt, rb, h, seg, color, options = {}) {
+      const geo = new THREE.CylinderGeometry(rt, rb, h, seg);
+      const mat = new THREE.MeshStandardMaterial({ color, roughness: options.roughness ?? 0.7, metalness: options.metalness ?? 0 });
+      const mesh = new THREE.Mesh(geo, mat);
+      mesh.castShadow = true;
+      mesh.receiveShadow = true;
+      return mesh;
+    }
 
-    // ── Load model.glb from GitHub ────────────────────────────────
-    // GLTFLoader via CDN
-    const script = document.createElement('script');
-    script.src = 'https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/loaders/GLTFLoader.js';
-    script.onload = function() {
-      const loader = new THREE.GLTFLoader();
-      // Load model.glb từ cùng thư mục (GitHub Pages root)
-      const modelUrl = 'https://designdaovn.github.io/DesignDAO/model.glb';
+    // shorthand to add to sceneGroup
+    function add(obj) { sceneGroup.add(obj); return obj; }
 
-      loader.load(
-        modelUrl,
-        function(gltf) {
-          const model = gltf.scene;
+    // ── LIGHTING ─────────────────────────────────────────────────
+    // Ambient — very dim, night feel
+    scene.add(new THREE.AmbientLight(0x1a1208, 0.6));
 
-          // Căn giữa model tự động
-          const box = new THREE.Box3().setFromObject(model);
-          const center = box.getCenter(new THREE.Vector3());
-          const size = box.getSize(new THREE.Vector3());
-          const maxDim = Math.max(size.x, size.y, size.z);
-          const scale = 3 / maxDim;
-          model.scale.setScalar(scale);
-          model.position.sub(center.multiplyScalar(scale));
+    // Bare-bulb hanging lamp — warm yellow
+    const bulbLight = new THREE.PointLight(0xffe066, 3.5, 12, 2);
+    bulbLight.position.set(0, 4.6, 0);
+    bulbLight.castShadow = true;
+    bulbLight.shadow.mapSize.set(1024, 1024);
+    scene.add(bulbLight);
 
-          scene.add(model);
+    // Bulb geometry
+    const bulbMesh = new THREE.Mesh(
+      new THREE.SphereGeometry(0.12, 12, 8),
+      new THREE.MeshStandardMaterial({ color: 0xffe880, emissive: 0xffe050, emissiveIntensity: 3, roughness: 0.1 })
+    );
+    bulbMesh.position.copy(bulbLight.position);
+    sceneGroup.add(bulbMesh);
 
-          // Điều chỉnh camera theo kích thước model
-          camera.position.set(0, size.y * scale * 0.5, maxDim * scale * 2.2);
-          controls.target.set(0, 0, 0);
-          controls.update();
-        },
-        undefined,
-        function(error) {
-          console.warn('Không load được model.glb:', error);
-        }
+    // Police tape blue-ish rim light
+    const rimLight = new THREE.DirectionalLight(0x4466ff, 0.35);
+    rimLight.position.set(-6, 4, -4);
+    scene.add(rimLight);
+
+    // ── ROOM ─────────────────────────────────────────────────────
+    const FLOOR_COLOR  = 0x5c4a32;
+    const WALL_COLOR   = 0x8b7355;
+
+    // Floor — wooden planks look via color
+    const floor = box(16, 0.18, 14, FLOOR_COLOR, { roughness: 0.95 });
+    floor.position.set(0, -0.09, 0);
+    floor.receiveShadow = true;
+    floor.castShadow = false;
+    sceneGroup.add(floor);
+
+    // Back wall (chỉ giữ tường sau)
+    const wallBack = box(16, 7, 0.18, WALL_COLOR, { roughness: 0.9 });
+    wallBack.position.set(0, 3.5, -7);
+    wallBack.receiveShadow = true; wallBack.castShadow = false;
+    sceneGroup.add(wallBack);
+
+    // Left wall (chỉ giữ tường trái)
+    const wallLeft = box(0.18, 7, 14, 0x7a6444, { roughness: 0.9 });
+    wallLeft.position.set(-8, 3.5, 0);
+    wallLeft.receiveShadow = true; wallLeft.castShadow = false;
+    sceneGroup.add(wallLeft);
+
+    // Baseboard trim chỉ cho tường sau và trái
+    const trimBack = box(16, 0.22, 0.08, 0x4a3820);
+    trimBack.position.set(0, 0.11, -6.91);
+    sceneGroup.add(trimBack);
+    const trimLeft = box(0.08, 0.22, 14, 0x4a3820);
+    trimLeft.position.set(-7.91, 0.11, 0);
+    sceneGroup.add(trimLeft);
+
+    // ── WINDOW (back wall, left side) ────────────────────────────
+    const winFrame = box(2.4, 2.8, 0.22, 0x4a3820);
+    winFrame.position.set(-3, 3.5, -6.98);
+    sceneGroup.add(winFrame);
+    // Glass pane — faint glow like moonlight
+    const winGlass = new THREE.Mesh(
+      new THREE.BoxGeometry(1.9, 2.3, 0.05),
+      new THREE.MeshStandardMaterial({ color: 0x88aacc, transparent: true, opacity: 0.22, roughness: 0, metalness: 0.1, emissive: 0x223344, emissiveIntensity: 0.4 })
+    );
+    winGlass.position.set(-3, 3.5, -6.87);
+    sceneGroup.add(winGlass);
+    // Moon glow from window
+    const moonLight = new THREE.SpotLight(0x8899cc, 0.8, 14, Math.PI / 8, 0.5);
+    moonLight.position.set(-3, 3.5, -5.5);
+    moonLight.target.position.set(-1.5, 0, 1);
+    moonLight.castShadow = true;
+    scene.add(moonLight);
+    sceneGroup.add(moonLight.target);
+
+    // ── DOOR (back wall, right side) ─────────────────────────────
+    const doorFrame = box(1.8, 3.6, 0.2, 0x4a3820);
+    doorFrame.position.set(3.5, 1.8, -6.98);
+    sceneGroup.add(doorFrame);
+    const doorPanel = box(1.5, 3.2, 0.12, 0x6b5030);
+    doorPanel.position.set(3.5, 1.6, -6.85);
+    sceneGroup.add(doorPanel);
+    // Knob
+    const knob = cylinder(0.06, 0.06, 0.12, 8, 0xc0a040, { metalness: 0.8, roughness: 0.2 });
+    knob.rotation.z = Math.PI / 2;
+    knob.position.set(2.75, 1.6, -6.75);
+    sceneGroup.add(knob);
+
+    // ── CHALK BODY OUTLINE ────────────────────────────────────────
+    // Main torso
+    function chalkRect(w, d, x, z, rot = 0) {
+      const geo = new THREE.PlaneGeometry(w, d);
+      const mat = new THREE.MeshStandardMaterial({
+        color: 0xffffff, roughness: 1, emissive: 0xddddcc, emissiveIntensity: 0.4,
+        transparent: true, opacity: 0.85
+      });
+      const m = new THREE.Mesh(geo, mat);
+      m.rotation.x = -Math.PI / 2;
+      m.rotation.z = rot;
+      m.position.set(x, 0.01, z);
+      sceneGroup.add(m);
+    }
+    // Body
+    chalkRect(0.6, 1.6, 0.6, 2.5);
+    // Head
+    const headGeo = new THREE.CircleGeometry(0.32, 24);
+    const headMat = new THREE.MeshStandardMaterial({ color: 0xffffff, emissive: 0xccccbb, emissiveIntensity: 0.4, transparent: true, opacity: 0.82 });
+    const headMesh = new THREE.Mesh(headGeo, headMat);
+    headMesh.rotation.x = -Math.PI / 2;
+    headMesh.position.set(0.6, 0.01, 1.6);
+    sceneGroup.add(headMesh);
+    // Arms
+    function chalkArm(x, z, rot) {
+      chalkRect(0.18, 0.9, x, z, rot);
+    }
+    chalkArm(-0.15, 2.5, -0.55);  // left arm
+    chalkArm(1.35, 2.45, 0.5);    // right arm
+    // Legs
+    chalkRect(0.2, 1.0, 0.2, 3.35, -0.18);
+    chalkRect(0.2, 1.0, 1.0, 3.38, 0.22);
+
+    // ── OVERTURNED TABLE ─────────────────────────────────────────
+    const tableGrp = new THREE.Group();
+    // Tabletop — flipped on side
+    const tabletop = box(2.4, 0.08, 1.2, 0x8b6340, { roughness: 0.75 });
+    tabletop.rotation.z = Math.PI / 2;
+    tabletop.position.set(-0.6, 0.7, -2.5);
+    tableGrp.add(tabletop);
+    // Legs sticking out
+    const legPositions = [[-0.5, -0.04], [0.5, -0.04], [-0.5, 0.5], [0.5, 0.5]];
+    legPositions.forEach(([lx, lz], i) => {
+      const leg = box(0.07, 0.07, 0.85, 0x6b4c2a);
+      leg.rotation.x = i < 2 ? -0.2 : 0.15;
+      leg.position.set(lx, 0.7 + (i < 2 ? 0.55 : -0.55), -2.5 + lz);
+      tableGrp.add(leg);
+    });
+    sceneGroup.add(tableGrp);
+
+    // ── CHAIRS ───────────────────────────────────────────────────
+    function makeChair(x, z, rotY, fallen = false) {
+      const g = new THREE.Group();
+      // Seat
+      const seat = box(0.65, 0.07, 0.65, 0x7a5530, { roughness: 0.8 });
+      seat.position.set(0, 0.55, 0);
+      g.add(seat);
+      // Back
+      const back = box(0.65, 0.65, 0.07, 0x7a5530, { roughness: 0.8 });
+      back.position.set(0, 0.9, -0.29);
+      g.add(back);
+      // Legs
+      [[-0.27, -0.27], [0.27, -0.27], [-0.27, 0.27], [0.27, 0.27]].forEach(([lx, lz]) => {
+        const l = box(0.06, 0.55, 0.06, 0x5c3d1e);
+        l.position.set(lx, 0.27, lz);
+        g.add(l);
+      });
+      g.rotation.y = rotY;
+      if (fallen) {
+        g.rotation.x = Math.PI / 2 + 0.2;
+        g.position.set(x, 0.38, z);
+      } else {
+        g.position.set(x, 0, z);
+      }
+      sceneGroup.add(g);
+    }
+    makeChair(-2.5, -1.2, 0.3, true);   // fallen
+    makeChair(2.8, -0.8, -0.4, false);  // standing, pushed
+    makeChair(-3.5, -3, 2.0, false);    // far back standing
+
+    // ── BOOKSHELF (left wall) ─────────────────────────────────────
+    const shelf = box(0.3, 3.2, 1.6, 0x5c4020, { roughness: 0.85 });
+    shelf.position.set(-7.7, 1.6, -3);
+    sceneGroup.add(shelf);
+    // Shelves
+    [0.4, 1.2, 2.0, 2.8].forEach(sy => {
+      const sh = box(0.28, 0.06, 1.5, 0x6b4c2a);
+      sh.position.set(-7.7, sy, -3);
+      sceneGroup.add(sh);
+    });
+    // Books
+    const bookColors = [0xcc3333, 0x3355cc, 0x226622, 0xcc8833, 0x993399, 0x338888];
+    let bx = -6.83;
+    bookColors.forEach((c, i) => {
+      const bk = box(0.08, 0.32 + Math.random() * 0.2, 0.22, c, { roughness: 0.9 });
+      bk.position.set(bx, 1.25 + (i > 2 ? 0.82 : 0), -2.9 + (i % 3) * 0.28);
+      bk.rotation.y = (Math.random() - 0.5) * 0.3;
+      sceneGroup.add(bk);
+    });
+    // Some fallen books on floor
+    [0xcc3333, 0x226622].forEach((c, i) => {
+      const bk = box(0.22, 0.06, 0.32, c, { roughness: 0.9 });
+      bk.rotation.z = (i === 0 ? 0.1 : -0.2);
+      bk.position.set(-6.5 + i * 0.3, 0.04, -2.3 + i * 0.4);
+      sceneGroup.add(bk);
+    });
+
+    // ── DESK (right side, upright) ────────────────────────────────
+    const desk = box(1.8, 0.07, 0.9, 0x9b7050, { roughness: 0.75 });
+    desk.position.set(5, 0.85, -3.5);
+    sceneGroup.add(desk);
+    [[-0.7, -0.35], [0.7, -0.35], [-0.7, 0.35], [0.7, 0.35]].forEach(([lx, lz]) => {
+      const l = box(0.07, 0.85, 0.07, 0x7a5530);
+      l.position.set(5 + lx, 0.42, -3.5 + lz);
+      sceneGroup.add(l);
+    });
+    // Desk items: scattered papers
+    [0, 0.3, -0.25].forEach((ox, i) => {
+      const paper = new THREE.Mesh(
+        new THREE.PlaneGeometry(0.35, 0.45),
+        new THREE.MeshStandardMaterial({ color: 0xf0e8d0, roughness: 1, side: THREE.DoubleSide })
       );
-    };
-    document.head.appendChild(script);
+      paper.rotation.x = -Math.PI / 2;
+      paper.rotation.z = (i - 1) * 0.4;
+      paper.position.set(5 + ox * 0.8, 0.9, -3.5 + (i - 1) * 0.15);
+      sceneGroup.add(paper);
+    });
+    // Coffee mug — knocked over
+    const mug = cylinder(0.08, 0.07, 0.22, 10, 0xcc4444, { roughness: 0.6 });
+    mug.rotation.z = Math.PI / 2;
+    mug.position.set(5.4, 0.9, -3.2);
+    sceneGroup.add(mug);
 
-    // ── Animation loop ────────────────────────────────────────────
+    // ── SCATTERED OBJECTS ON FLOOR ────────────────────────────────
+    // Broken glass / scattered shards (flat thin boxes)
+    const glassPositions = [[1.2, 1.8], [1.5, 2.0], [0.9, 2.2], [1.8, 1.6]];
+    glassPositions.forEach(([gx, gz]) => {
+      const shard = new THREE.Mesh(
+        new THREE.BoxGeometry(0.08 + Math.random() * 0.12, 0.01, 0.06 + Math.random() * 0.1),
+        new THREE.MeshStandardMaterial({ color: 0xaaddee, transparent: true, opacity: 0.6, roughness: 0.1, metalness: 0.3 })
+      );
+      shard.rotation.y = Math.random() * Math.PI;
+      shard.position.set(gx, 0.01, gz);
+      sceneGroup.add(shard);
+    });
+    // Crumpled papers
+    [[3, 1], [-2, 3], [1.5, -1.5]].forEach(([px, pz]) => {
+      const paper = new THREE.Mesh(
+        new THREE.IcosahedronGeometry(0.1 + Math.random() * 0.05, 0),
+        new THREE.MeshStandardMaterial({ color: 0xe8dfc0, roughness: 1 })
+      );
+      paper.scale.y = 0.35;
+      paper.position.set(px, 0.04, pz);
+      sceneGroup.add(paper);
+    });
+
+    // ── POLICE TAPE ───────────────────────────────────────────────
+    const TAPE_Y  = [0.22, 0.9, 1.55];
+    const TAPE_COLOR = 0xf2c12e;
+
+    function addTapeSegment(x1, z1, x2, z2, y) {
+      const dx = x2 - x1, dz = z2 - z1;
+      const len = Math.sqrt(dx * dx + dz * dz);
+      const angle = Math.atan2(dx, dz);
+      const tape = new THREE.Mesh(
+        new THREE.BoxGeometry(len, 0.06, 0.04),
+        new THREE.MeshStandardMaterial({
+          color: TAPE_COLOR, roughness: 0.6,
+          emissive: 0xf2c12e, emissiveIntensity: 0.15
+        })
+      );
+      tape.position.set((x1 + x2) / 2, y, (z1 + z2) / 2);
+      tape.rotation.y = angle;
+      // Stripes via a second thin dark strip
+      const stripe = new THREE.Mesh(
+        new THREE.BoxGeometry(len, 0.063, 0.012),
+        new THREE.MeshStandardMaterial({ color: 0x111111, roughness: 0.8 })
+      );
+      stripe.position.set((x1 + x2) / 2, y, (z1 + z2) / 2 - 0.018);
+      stripe.rotation.y = angle;
+      sceneGroup.add(tape);
+      sceneGroup.add(stripe);
+    }
+
+    // Tape poles
+    const polePositions = [
+      [-4, -1], [4, -1], [4, 4.5], [-4, 4.5],
+      [0, -1], [0, 4.5]
+    ];
+    polePositions.forEach(([px, pz]) => {
+      const pole = cylinder(0.04, 0.04, 2.0, 8, 0xcccccc, { roughness: 0.4, metalness: 0.5 });
+      pole.position.set(px, 1.0, pz);
+      sceneGroup.add(pole);
+    });
+
+    // Tape lines — across the crime scene area
+    TAPE_Y.forEach(y => {
+      addTapeSegment(-4, -1, 4, -1, y);
+      addTapeSegment(4, -1, 4, 4.5, y);
+      addTapeSegment(4, 4.5, -4, 4.5, y);
+      addTapeSegment(-4, 4.5, -4, -1, y);
+      // Diagonal across
+      addTapeSegment(-4, -1, 4, 4.5, y);
+      addTapeSegment(4, -1, -4, 4.5, y);
+    });
+
+    // ── EVIDENCE MARKERS (yellow number cones) ────────────────────
+    function evidenceMarker(x, z, num) {
+      const g = new THREE.Group();
+      const cone = new THREE.Mesh(
+        new THREE.ConeGeometry(0.1, 0.22, 6),
+        new THREE.MeshStandardMaterial({ color: 0xf2c12e, roughness: 0.5, emissive: 0xf2c12e, emissiveIntensity: 0.2 })
+      );
+      cone.position.y = 0.11;
+      g.add(cone);
+      g.position.set(x, 0, z);
+      sceneGroup.add(g);
+    }
+    evidenceMarker(-1.2, 1.8, 1);
+    evidenceMarker(1.8, 0.5, 2);
+    evidenceMarker(-2.8, -0.5, 3);
+    evidenceMarker(3.0, 2.5, 4);
+    evidenceMarker(0.5, 3.8, 5);
+
+    // ── BLOOD POOL (dark red plane) ───────────────────────────────
+    const blood = new THREE.Mesh(
+      new THREE.CircleGeometry(0.45, 20),
+      new THREE.MeshStandardMaterial({ color: 0x660010, roughness: 1, transparent: true, opacity: 0.88 })
+    );
+    blood.rotation.x = -Math.PI / 2;
+    blood.position.set(0.6, 0.008, 2.2);
+    sceneGroup.add(blood);
+    // Smear
+    const smear = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.22, 0.7),
+      new THREE.MeshStandardMaterial({ color: 0x550010, roughness: 1, transparent: true, opacity: 0.7 })
+    );
+    smear.rotation.x = -Math.PI / 2;
+    smear.rotation.z = 0.4;
+    smear.position.set(0.9, 0.007, 2.7);
+    sceneGroup.add(smear);
+
+    // ── LAMP (floor lamp, fallen) ─────────────────────────────────
+    const lampBase = cylinder(0.15, 0.2, 0.12, 10, 0x555555, { metalness: 0.6, roughness: 0.4 });
+    lampBase.position.set(-4.5, 0.06, 1);
+    sceneGroup.add(lampBase);
+    const lampPole = box(0.06, 1.6, 0.06, 0x666666, { metalness: 0.6 });
+    lampPole.rotation.z = Math.PI / 2 + 0.1;
+    lampPole.position.set(-3.7, 0.35, 1);
+    sceneGroup.add(lampPole);
+    const lampShade = new THREE.Mesh(
+      new THREE.ConeGeometry(0.32, 0.4, 10, 1, true),
+      new THREE.MeshStandardMaterial({ color: 0xcc9944, side: THREE.DoubleSide, roughness: 0.7 })
+    );
+    lampShade.rotation.z = Math.PI / 2 + 0.1;
+    lampShade.position.set(-2.85, 0.55, 1);
+    sceneGroup.add(lampShade);
+
+    // ── DETECTIVE HAT on floor ────────────────────────────────────
+    const hatBrim = cylinder(0.38, 0.38, 0.04, 16, 0x1a1008, { roughness: 0.9 });
+    hatBrim.position.set(2.5, 0.02, 1.8);
+    sceneGroup.add(hatBrim);
+    const hatTop = cylinder(0.2, 0.22, 0.3, 16, 0x1a1008, { roughness: 0.9 });
+    hatTop.position.set(2.5, 0.18, 1.8);
+    sceneGroup.add(hatTop);
+
+    // ── CIGARETTE on floor ────────────────────────────────────────
+    const cig = cylinder(0.015, 0.015, 0.28, 6, 0xf0e8d0, { roughness: 0.9 });
+    cig.rotation.z = Math.PI / 2;
+    cig.position.set(3.2, 0.015, 0.5);
+    sceneGroup.add(cig);
+    // Ash
+    const ash = cylinder(0.04, 0.05, 0.015, 8, 0x888888, { roughness: 1 });
+    ash.position.set(3.42, 0.008, 0.5);
+    sceneGroup.add(ash);
+
+    // ── FLICKERING LIGHT ANIMATION ────────────────────────────────
+    let flickerTime = 0;
+    function flickerLamp() {
+      flickerTime += 0.016;
+      const flicker = 0.85 + 0.15 * Math.sin(flickerTime * 7.3) * Math.sin(flickerTime * 3.1);
+      bulbLight.intensity = 3.5 * flicker;
+      bulbMesh.material.emissiveIntensity = 3 * flicker;
+    }
+
+    // ── ANIMATION LOOP ────────────────────────────────────────────
+    let animTime = 0;
     function animate() {
       requestAnimationFrame(animate);
+      animTime += 0.008;
+      // Gentle floating like reference file
+      sceneGroup.position.y = Math.sin(animTime) * 0.12;
+      sceneGroup.rotation.y = Math.sin(animTime * 0.4) * 0.018;
       controls.update();
+      flickerLamp();
       renderer.render(scene, camera);
     }
     animate();
 
-    // ── Resize handler ────────────────────────────────────────────
+    // ── RESIZE ───────────────────────────────────────────────────
     window.addEventListener('resize', () => {
       const { w, h } = getSize();
       camera.aspect = w / h;
@@ -1676,6 +2139,16 @@
         reviews: 128,
         difficulty: 2,
         difficultyText: 'Khó',
+        // ===== SẢN PHẨM 1: THAY CÁC LINK BÊN DƯỚI =====
+        images: [
+          'LINK_ANH_1_SP1',
+          'LINK_ANH_2_SP1',
+          'LINK_ANH_3_SP1',
+          'LINK_ANH_4_SP1',
+          'LINK_ANH_5_SP1'
+        ],
+        video: 'LINK_YOUTUBE_SP1', // VD: https://www.youtube.com/watch?v=XXXXXXXXXXX
+        // ================================================
         description: `<p>🕵️‍♂️ HỒ SƠ MẬT – Trò chơi phá án kết hợp AR (Thực tế ảo tăng cường) 🔎</p>
           <h4>Dac diem noi bat</h4>
           <ul>
@@ -1693,6 +2166,16 @@
         reviews: 86,
         difficulty: 3,
         difficultyText: 'Khó',
+        // ===== SẢN PHẨM 2: THAY CÁC LINK BÊN DƯỚI =====
+        images: [
+          'LINK_ANH_1_SP2',
+          'LINK_ANH_2_SP2',
+          'LINK_ANH_3_SP2',
+          'LINK_ANH_4_SP2',
+          'LINK_ANH_5_SP2'
+        ],
+        video: 'LINK_YOUTUBE_SP2',
+        // ================================================
         description: `<p>🕵️‍♂️ HỒ SƠ MẬT – Trò chơi phá án kết hợp AR (Thực tế ảo tăng cường) 🔎</p>
           <h4>Dac diem noi bat</h4>
           <ul>
@@ -1710,6 +2193,16 @@
         reviews: 64,
         difficulty: 4,
         difficultyText: 'Trung Bình',
+        // ===== SẢN PHẨM 3: THAY CÁC LINK BÊN DƯỚI =====
+        images: [
+          'LINK_ANH_1_SP3',
+          'LINK_ANH_2_SP3',
+          'LINK_ANH_3_SP3',
+          'LINK_ANH_4_SP3',
+          'LINK_ANH_5_SP3'
+        ],
+        video: 'LINK_YOUTUBE_SP3',
+        // ================================================
         description: `<p>🕵️‍♂️ HỒ SƠ MẬT – Trò chơi phá án kết hợp AR (Thực tế ảo tăng cường) 🔎</p>
           <h4>Dac diem noi bat</h4>
           <ul>
@@ -1727,6 +2220,16 @@
         reviews: 42,
         difficulty: 1,
         difficultyText: 'Rất Khó',
+        // ===== SẢN PHẨM 4: THAY CÁC LINK BÊN DƯỚI =====
+        images: [
+          'LINK_ANH_1_SP4',
+          'LINK_ANH_2_SP4',
+          'LINK_ANH_3_SP4',
+          'LINK_ANH_4_SP4',
+          'LINK_ANH_5_SP4'
+        ],
+        video: 'LINK_YOUTUBE_SP4',
+        // ================================================
         description: `<p>🕵️‍♂️ HỒ SƠ MẬT – Trò chơi phá án kết hợp AR (Thực tế ảo tăng cường) 🔎</p>
           <h4>Dac diem noi bat</h4>
           <ul>
@@ -1738,6 +2241,59 @@
       }
     ];
 
+    // Slideshow state
+    let currentSlide = 0;
+    let currentImages = [];
+
+    function buildSlideshow(images) {
+      currentSlide = 0;
+      currentImages = images;
+      const track = document.getElementById('slideshowTrack');
+      const dots = document.getElementById('slideDots');
+      track.innerHTML = '';
+      dots.innerHTML = '';
+      images.forEach((src, i) => {
+        const img = document.createElement('img');
+        img.src = src;
+        img.alt = 'Ảnh sản phẩm ' + (i + 1);
+        img.onerror = function() {
+          this.src = 'data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" width="400" height="250"><rect width="400" height="250" fill="%232A2A27"/><text x="50%25" y="50%25" font-family="sans-serif" font-size="14" fill="%239A9A8E" text-anchor="middle" dominant-baseline="middle">🖼 Ảnh ' + (i+1) + '</text></svg>';
+        };
+        track.appendChild(img);
+        const dot = document.createElement('span');
+        dot.className = 'slide-dot' + (i === 0 ? ' active' : '');
+        dot.onclick = () => goToSlide(i);
+        dots.appendChild(dot);
+      });
+      updateSlide();
+    }
+
+    function goToSlide(n) {
+      currentSlide = Math.max(0, Math.min(n, currentImages.length - 1));
+      updateSlide();
+    }
+
+    function slideMove(dir) {
+      currentSlide = (currentSlide + dir + currentImages.length) % currentImages.length;
+      updateSlide();
+    }
+
+    function updateSlide() {
+      const track = document.getElementById('slideshowTrack');
+      track.style.transform = `translateX(-${currentSlide * 100}%)`;
+      document.querySelectorAll('.slide-dot').forEach((d, i) => {
+        d.classList.toggle('active', i === currentSlide);
+      });
+    }
+
+    function getYouTubeEmbedUrl(url) {
+      if (!url || url.startsWith('LINK_')) return null;
+      const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([A-Za-z0-9_-]{11})/);
+      if (match) return 'https://www.youtube.com/embed/' + match[1] + '?autoplay=1';
+      // Nếu là link trực tiếp khác (không phải YouTube)
+      return url;
+    }
+
     // Modal Functions
     function openModal(productIndex) {
       const product = products[productIndex];
@@ -1748,6 +2304,18 @@
       document.getElementById('modalRating').textContent = `${product.rating} (${product.reviews} danh gia)`;
       document.getElementById('modalDescription').innerHTML = product.description;
       document.getElementById('reviewScoreNumber').textContent = product.rating;
+      
+      // Build slideshow
+      buildSlideshow(product.images);
+
+      // Setup video
+      const videoFrame = document.getElementById('modalVideoFrame');
+      const playBtn = document.getElementById('modalPlayBtn');
+      videoFrame.style.display = 'none';
+      playBtn.style.display = 'flex';
+      videoFrame.src = '';
+      // Store video URL for when play is clicked
+      document.getElementById('modalVideoWrap').dataset.videoUrl = product.video;
       
       // Update difficulty dots
       const difficultyContainer = document.getElementById('modalDifficulty');
@@ -1775,6 +2343,11 @@
       const modal = document.getElementById('productModal');
       modal.classList.remove('active');
       document.body.style.overflow = '';
+      // Dừng video khi đóng modal
+      const frame = document.getElementById('modalVideoFrame');
+      frame.src = '';
+      frame.style.display = 'none';
+      document.getElementById('modalPlayBtn').style.display = 'flex';
     }
 
     function switchTab(tabName) {
@@ -1794,7 +2367,18 @@
     }
 
     function playVideo() {
-      alert('Video se duoc phat tai day. Ban co the nhung video YouTube hoac video tu may chu.');
+      const wrap = document.getElementById('modalVideoWrap');
+      const videoUrl = wrap.dataset.videoUrl;
+      const embedUrl = getYouTubeEmbedUrl(videoUrl);
+      if (!embedUrl) {
+        alert('Chưa có link video cho sản phẩm này.');
+        return;
+      }
+      const frame = document.getElementById('modalVideoFrame');
+      const playBtn = document.getElementById('modalPlayBtn');
+      frame.src = embedUrl;
+      frame.style.display = 'block';
+      playBtn.style.display = 'none';
     }
 
     // Close modal on overlay click
