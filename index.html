@@ -76,6 +76,10 @@
       color: var(--yellow);
     }
 
+    .nav {
+      gap: 2.5rem;
+    }
+
     .nav a {
       color: var(--text-light);
       text-decoration: none;
@@ -202,7 +206,7 @@
       cursor: grabbing;
     }
 
-    /* Badge nổi trên model */
+    /* Badge nổi trên model — chỉ hiện khi hover */
     .scene-badge {
       position: absolute;
       top: 42%;
@@ -214,14 +218,18 @@
       border-radius: 9999px;
       display: flex;
       align-items: center;
-      gap: 0.45rem;
       font-size: 0.82rem;
       font-weight: 700;
       box-shadow: 0 4px 20px rgba(242,193,46,0.3);
       z-index: 25;
       pointer-events: none;
       white-space: nowrap;
-      animation: badgeFloat 3s ease-in-out infinite;
+      opacity: 0;
+      transition: opacity 0.35s ease;
+    }
+
+    #canvas-container:hover .scene-badge {
+      opacity: 1;
     }
 
     @keyframes badgeFloat {
@@ -243,8 +251,8 @@
 
     /* Product Carousel */
     .products-section {
-      padding: 0 3rem 3rem;
-      margin-top: -14rem;
+      padding: 4rem 3rem 4rem;
+      margin-top: -10rem;
       position: relative;
       z-index: 10;
       background: var(--black);
@@ -254,7 +262,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      margin-bottom: 1.5rem;
+      margin-bottom: 2rem;
     }
 
     .products-header h2 {
@@ -1171,7 +1179,7 @@
     <div id="canvas-container">
       <canvas id="three-canvas"></canvas>
       <div class="scene-badge">
-        🔍 Kéo để khám phá hiện trường
+        Kéo để khám phá hiện trường
       </div>
       <div class="drag-hint">Kéo để xoay • Tự động xoay</div>
     </div>
